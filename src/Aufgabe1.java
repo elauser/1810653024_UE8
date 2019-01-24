@@ -1,7 +1,9 @@
 import javax.swing.*;
 import java.io.*;
-import java.util.ArrayList;
-
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.time.LocalDate;
 
 
 public class Aufgabe1 {
@@ -44,13 +46,22 @@ public class Aufgabe1 {
 
     public static String login(String un, String pw) throws IOException {
         File file = new File("C:\\Users\\User\\Desktop\\User\\" + un + ".txt");
-        if (!file.exists()) return "Invalid Username";
+        if (!file.exists()){
+            logger(un,pw,false);
+            return "Invalid Username";
+        }
         FileReader fr = new FileReader(file);
         BufferedReader br = new BufferedReader(fr);
         String pwr = br.readLine();
         br.close();
-        if ((pwr.equals(encrypt(pw)))) return "Mein Geheimnis ist... Beim duschen bin ich nackt :^)";
-        else return "Invalid Password";
+        if ((pwr.equals(encrypt(pw)))){
+            logger(un,pw,true);
+            return "Mein Geheimnis ist... Beim duschen bin ich nackt :^)";
+        }
+        else{
+            logger(un,pw,false);
+            return "Invalid Password";
+        }
     }
 
     public static String encrypt(String pw) {
@@ -66,6 +77,18 @@ public class Aufgabe1 {
         }
         String re = new String(cryptArray);
         return re;
+    }
+    public static void logger(String un, String pw, boolean li) throws IOException {
+        String sep = System.getProperty("line.separator");
+        DateTimeFormatter df = DateTimeFormatter.ISO_DATE_TIME;
+        LocalDateTime now = LocalDateTime.now();
+        File log = new File("log.txt");
+        if(!log.exists())log.createNewFile();
+        FileWriter lfw = new FileWriter(log,true);
+        BufferedWriter bw = new BufferedWriter(lfw);
+        bw.write(now.format(df) + " UN: " + un + " PW: " + pw.substring(0,1) + "###" + pw.substring(pw.length()-2,pw.length()-1) + " " + li);
+        bw.newLine();
+        bw.close();
     }
 }
 
