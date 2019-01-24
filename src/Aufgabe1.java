@@ -9,6 +9,11 @@ import java.time.LocalDate;
 public class Aufgabe1 {
     public static void main(String[] args) {
         while (true) {
+            try {
+                logTrys();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             int optionen = Integer.parseInt(JOptionPane.showInputDialog("1 = anmelden 2 = registrieren 3 = beenden"));
             if (optionen == 1) {
                 String un = JOptionPane.showInputDialog("Geben Sie den Usernamen ein");
@@ -86,9 +91,32 @@ public class Aufgabe1 {
         if(!log.exists())log.createNewFile();
         FileWriter lfw = new FileWriter(log,true);
         BufferedWriter bw = new BufferedWriter(lfw);
-        bw.write(now.format(df) + " UN: " + un + " PW: " + pw.substring(0,1) + "###" + pw.substring(pw.length()-2,pw.length()-1) + " " + li);
+        bw.write(now.format(df) + " UN: " + un + " PW: " + pw.substring(0,1) + "###" + pw.substring(pw.length()-2,pw.length()) + " " + li);
         bw.newLine();
         bw.close();
+    }
+    public static void logTrys() throws IOException {
+        String text;
+        int lengthTrue = 0;
+        int lengthFalse = 0;
+        File log = new File("log.txt");
+        if(!log.exists()) System.out.println("No log file");
+        FileReader fr = new FileReader(log);
+        BufferedReader br = new BufferedReader(fr);
+        while(true) {
+            text = br.readLine();
+            if (text==null){
+                br.close();
+                break;
+            }
+            text = text.substring(text.length()-4, text.length());
+
+            if (text.contains("true")) {
+                lengthTrue++;
+            }
+            else lengthFalse++;
+        }
+        System.out.println("True: " + lengthTrue + " False: " + lengthFalse);
     }
 }
 
